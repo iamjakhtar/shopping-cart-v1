@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Cart {
     private List<Product> products;
@@ -35,13 +36,7 @@ public class Cart {
     }
 
     private List<Product> getAllProductsByName(char productName) {
-        List<Product> filteredProducts = new ArrayList<>();
-        for (Product p : this.products) {
-            if (p.getName() == productName) {
-                filteredProducts.add(p);
-            }
-        }
-        return filteredProducts;
+        return this.products.stream().filter(p -> p.getName() == productName).toList();
     }
 
     private double getProductTotal(Product product) {
@@ -50,12 +45,20 @@ public class Cart {
         return productTotal;
     }
 
+    private Optional<Discount> findDiscountByProductName(char productName) {
+        return Optional.ofNullable(this.discounts.get(productName));
+    }
+
     private double calculateProductDiscount(Product product) {
         double total = 0.0;
         int productCount = this.getAllProductsByName(product.getName()).size();
-        Discount discount = this.discounts.get(product.getName());
-        total += (productCount / discount.getRequiredQty()) * discount.getDiscountedPrice();
-        total += (productCount % discount.getRequiredQty()) * product.getUnitPrice();
+        Optional<Discount> optDiscount = this.findDiscountByProductName(product.getName());
+
+        if (optDiscount != null) {
+            Discount discount = optDiscount.get();
+            total += (productCount / discount.getRequiredQty()) * discount.getDiscountedPrice();
+            total += (productCount % discount.getRequiredQty()) * product.getUnitPrice();
+        }
         return (this.getProductTotal(product) - total);
     }
 
@@ -69,10 +72,14 @@ public class Cart {
     private boolean isEligibleForDiscount(Product p) {
         char productName = p.getName();
         if (this.discounts.containsKey(productName)) {
-            Discount d = this.discounts.get(p.getName());
-            int productCount = this.getAllProductsByName(productName).size();
-            if (productCount % d.getRequiredQty() == 0) {
-                return true;
+            Optional<Discount> optDiscount = this.findDiscountByProductName(productName);
+
+            if (optDiscount != null) {
+                Discount d = optDiscount.get();
+                int productCount = this.getAllProductsByName(productName).size();
+                if (productCount % d.getRequiredQty() == 0) {
+                    return true;
+                }
             }
         }
         return false;

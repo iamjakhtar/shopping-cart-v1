@@ -14,26 +14,35 @@ public class UserInterface {
     public void scanItems() {
 
         while (true) {
-            System.out.println("Enter a product name: ");
+            System.out.println("Enter a product name or type 'exit' to end the program.");
             
             try {
                 String userInput = this.scanner.nextLine().trim().toUpperCase();
                 
                 if (userInput.equals("EXIT")) {
                     this.cart.printCart();
+                    System.out.println("Thank you for shopping.");
                     break;
                 }
                 char productName = userInput.charAt(0);
-                if (userInput == null || !this.cart.getAvailableProducts().containsKey(productName)) {
+                boolean isProductInStock = this.cart.getAvailableProducts().containsKey(productName);
+
+                if (userInput == null || !isProductInStock) {
                     throw new IllegalArgumentException("Invalid product name, try again");
                 }
                 
                 this.cart.addToCart(productName);
                 this.cart.printCart();
 
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+        }
+
+        if (this.scanner != null) {
+            this.scanner.close();
         }
     }
 }
