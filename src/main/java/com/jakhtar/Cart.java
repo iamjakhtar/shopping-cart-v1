@@ -61,7 +61,7 @@ public class Cart {
         return (this.getProductTotal(product) - total);
     }
 
-    private double getTotalDiscount() {
+    public double getTotalDiscount() {
         Product product = this.products.get(this.products.size() - 1);
         double productDiscount = this.calculateProductDiscount(product);
 
@@ -84,7 +84,7 @@ public class Cart {
         return false;
     }
 
-    private double getCartTotal() {
+    public double getCartTotal() {
         return this.products.stream().mapToDouble(p -> p.getUnitPrice()).sum();
     }
 
@@ -100,11 +100,15 @@ public class Cart {
         this.printSeparator();
     }
 
+    public double getCartTotalAfterDiscount() {
+        return cartTotal - totalDiscount;
+    }
+
     private void printCartFooter() {
         this.printSeparator();
         System.out.println("Net total:\t" + cartTotal);
         System.out.println("Discount:\t" + this.formatAmount(totalDiscount));
-        System.out.println("Total:\t\t" + this.formatAmount(cartTotal - totalDiscount));
+        System.out.println("Total:\t\t" + this.formatter.format(this.getCartTotalAfterDiscount()));
         this.printSeparator();
     }
 
