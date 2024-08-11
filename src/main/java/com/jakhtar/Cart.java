@@ -1,6 +1,5 @@
 package com.jakhtar;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,10 +8,8 @@ public class Cart {
     private List<Product> products;
     private Map<Character, Discount> discounts;
     private Map<Character, Product> availableProducts;
-    private DecimalFormat formatter = new DecimalFormat("0.##");
     private double cartTotal = 0.0;
     private double totalDiscount = 0.0;
-    private static final String LINE_SEPARATOR = "-".repeat(24);
 
     public Cart(List<Product> products, Map<Character, Product> availableProducts, Map<Character, Discount> discounts) {
         this.products = products;
@@ -88,37 +85,11 @@ public class Cart {
         return this.products.stream().mapToDouble(p -> p.getUnitPrice()).sum();
     }
 
-    private void printSeparator() {
-        System.out.println(LINE_SEPARATOR);
-    }
-
-    private void printCartHeader() {
-        this.printSeparator();
-        System.out.println("-".repeat(4) + " Shopping  Cart " + "-".repeat(4));
-        this.printSeparator();
-        System.out.println("Product\t\t Price");
-        this.printSeparator();
-    }
-
     public double getCartTotalAfterDiscount() {
-        return cartTotal - totalDiscount;
-    }
-
-    private void printCartFooter() {
-        this.printSeparator();
-        System.out.println("Net total:\t" + cartTotal);
-        System.out.println("Discount:\t" + this.formatAmount(totalDiscount));
-        System.out.println("Total:\t\t" + this.formatter.format(this.getCartTotalAfterDiscount()));
-        this.printSeparator();
+        return this.cartTotal - this.totalDiscount;
     }
 
     public void printCart() {
-        this.printCartHeader();
-        this.products.stream().forEach(p -> System.out.println(p));
-        this.printCartFooter();
-    }
-
-    private String formatAmount(double amount) {
-        return this.formatter.format(amount);
+        CartPrinter.printCart(products, cartTotal, totalDiscount);
     }
 }

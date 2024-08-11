@@ -19,6 +19,9 @@ public class UserInterface {
             try {
                 String userInput = this.scanner.nextLine().trim().toUpperCase();
                 
+                if (userInput.isEmpty()) {
+                    throw new IllegalArgumentException("You have not provided a product name.");
+                }
                 if (userInput.equals("EXIT")) {
                     this.cart.printCart();
                     System.out.println("Thank you for shopping.");
