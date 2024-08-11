@@ -17,9 +17,8 @@ public class Product {
         return this.unitPrice;
     }
 
-
     @Override
     public String toString() {
-        return this.name + " " + this.unitPrice;
+        return this.name + "\t\t" + this.unitPrice;
     }
 }
