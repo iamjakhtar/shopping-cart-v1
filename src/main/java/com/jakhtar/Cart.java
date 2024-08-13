@@ -89,7 +89,19 @@ public class Cart {
         return this.cartTotal - this.totalDiscount;
     }
 
+    public double payNow(double amount) {
+        return amount - getCartTotalAfterDiscount();
+    }
+
+    public boolean isAmountValid(double amount) {
+        return amount >= this.getCartTotalAfterDiscount();
+    }
+
     public void printCart() {
         CartPrinter.printCart(products, cartTotal, totalDiscount);
+    }
+
+    public void printCheckoutSummary(double change) {
+        CartPrinter.printCheckoutSummary(products, cartTotal, totalDiscount, change);
     }
 }

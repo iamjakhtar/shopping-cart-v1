@@ -25,12 +25,19 @@ public class CartPrinter {
         System.out.println("Discount:\t" + formatAmount(totalDiscount));
         System.out.println("Total:\t\t" + formatAmount(cartTotal - totalDiscount));
         printSeparator();
+
     }
 
     public static void printCart(List<Product> products, double cartTotal, double totalDiscount) {
         printCartHeader();
         products.stream().forEach(p -> System.out.println(p));
         printCartFooter(cartTotal, totalDiscount);
+    }
+
+    public static void printCheckoutSummary(List<Product> products, double cartTotal, double totalDiscount, double change) {
+        printCart(products, cartTotal, totalDiscount);
+        System.out.println("Change:\t\t" + formatAmount(change));
+        System.out.println("Thank you for shopping.");
     }
 
     private static String formatAmount(double amount) {

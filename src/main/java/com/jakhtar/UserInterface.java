@@ -15,31 +15,32 @@ public class UserInterface {
 
         while (true) {
             System.out.println("Enter a product name or type 'exit' to end the program.");
-            
+
             try {
                 String userInput = this.scanner.nextLine().trim().toUpperCase();
-                
+
                 if (userInput.isEmpty()) {
                     throw new IllegalArgumentException("You have not provided a product name.");
                 }
                 if (userInput.equals("EXIT")) {
-                    this.cart.printCart();
-                    System.out.println("Thank you for shopping.");
+                    double change = this.processPayment(scanner, cart);
+                    this.cart.printCheckoutSummary(change);
+
                     break;
                 }
                 char productName = userInput.charAt(0);
                 boolean isProductInStock = this.cart.getAvailableProducts().containsKey(productName);
 
                 if (userInput == null || !isProductInStock) {
-                    throw new IllegalArgumentException("Invalid product name, try again");
+                    throw new InvalidProductException("Invalid product name, try again");
                 }
-                
+
                 this.cart.addToCart(productName);
                 this.cart.printCart();
 
-            } catch (IllegalArgumentException e) {
+            } catch (InvalidProductException e) {
                 System.out.println(e.getMessage());
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -47,5 +48,20 @@ public class UserInterface {
         if (this.scanner != null) {
             this.scanner.close();
         }
+    }
+
+    public double processPayment(Scanner scanner, Cart cart) {
+        double amount = 0.0;
+        while (true) {
+            System.out.println("Please enter amount to pay:");
+            amount = Double.parseDouble(this.scanner.nextLine().trim());
+            if (!this.cart.isAmountValid(amount)) {
+                System.out.println("Not correct amount, try again");
+                continue;
+            }
+            break;
+        }
+        return this.cart.payNow(amount);
+
     }
 }
